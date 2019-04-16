@@ -196,7 +196,10 @@ class EnvironmentDump(object):
         # Fix for 'Inappopropirate ioctl for device' on posix systems.
         if os.name == "posix":
             import pwd
-            username = pwd.getpwuid(os.geteuid()).pw_name
+            try:
+                username = pwd.getpwuid(os.geteuid()).pw_name
+            except KeyError:
+                username = os.geteuid()
         else:
             username = os.environ.get('USER', os.environ.get('USERNAME', 'UNKNOWN'))
             if username == 'UNKNOWN' and hasattr(os, 'getlogin'):
